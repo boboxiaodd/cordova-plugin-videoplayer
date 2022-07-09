@@ -1,0 +1,14 @@
+{
+    "name": "videoplayer",
+    "version": "0.0.1",
+    "description": "no description",
+    "cordova": {
+        "id": "videoplayer",
+        "platforms": [
+            "ios"
+        ]
+    },
+    "keywords": [],
+    "author": "bobo",
+    "license": "MIT"
+}

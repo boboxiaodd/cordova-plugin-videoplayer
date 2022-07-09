@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-videoplayer" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+    <name>CDVVideoPlayer</name>
+    <js-module name="CDVVideoPlayer" src="www/videoplayer.js">
+        <clobbers target="CDVVideoPlayer" />
+    </js-module>
+    <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="CDVVideoPlayer">
+                <param name="ios-package" value="CDVVideoPlayer" />
+            </feature>
+        </config-file>
+        <header-file src="src/ios/CDVVideoPlayer.h" />
+        <source-file src="src/ios/CDVVideoPlayer.m" />
+    </platform>
+
+</plugin>
