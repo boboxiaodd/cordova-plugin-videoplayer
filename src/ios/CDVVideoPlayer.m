@@ -16,7 +16,10 @@
     _videoplayer_command = command;
     _videoView = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
     MainViewController *rootVC = (MainViewController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+    rootVC.webView.backgroundColor = UIColor.clearColor;
+    rootVC.webView.opaque = false;
     [rootVC.view insertSubview:_videoView belowSubview: rootVC.webView];
+//    [self.viewController.view addSubview:_videoView];
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     AVPlayer *player = [[AVPlayer alloc] init];
     _videoPlayer = [AVPlayerLayer playerLayerWithPlayer: player];
@@ -27,7 +30,7 @@
     [self send_event:_videoplayer_command withMessage:@{@"status":@"init"} Alive:YES State:YES];
 
 }
--(void) filish_play_video:(CDVInvokedUrlCommand *)command
+-(void) end_play_video:(CDVInvokedUrlCommand *)command
 {
     _videoplayer_command = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
