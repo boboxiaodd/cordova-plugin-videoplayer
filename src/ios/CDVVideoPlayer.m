@@ -16,8 +16,10 @@
     _videoplayer_command = command;
     _videoView = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
     MainViewController *rootVC = (MainViewController *)[UIApplication sharedApplication].keyWindow.rootViewController;
-    rootVC.webView.backgroundColor = UIColor.clearColor;
-    rootVC.webView.opaque = false;
+    if(rootVC.webView.backgroundColor != UIColor.clearColor){
+        rootVC.webView.backgroundColor = UIColor.clearColor;
+        rootVC.webView.opaque = false;
+    }
     [rootVC.view insertSubview:_videoView belowSubview: rootVC.webView];
 //    [self.viewController.view addSubview:_videoView];
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
