@@ -1,14 +1,22 @@
 #import <Cordova/CDV.h>
 #import "CDVVideoPlayer.h"
 #import <AVFoundation/AVFoundation.h>
+#import "MainViewController.h"
 #import <AVKit/AVKit.h>
 
-@implementation CDVPicker
+@interface CDVVideoPlayer ()
+@property (nonatomic,strong) CDVInvokedUrlCommand * videoplayer_command;
+@property (nonatomic,strong) UIView * videoView;
+@property (nonatomic,strong) AVPlayerLayer* videoPlayer;
+@end
+
+@implementation CDVVideoPlayer
 -(void) prepare_play_video:(CDVInvokedUrlCommand *)command
 {
     _videoplayer_command = command;
     _videoView = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    [_rootVC.view insertSubview:_videoView belowSubview: _rootVC.webView];
+    MainViewController *rootVC = (MainViewController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+    [rootVC.view insertSubview:_videoView belowSubview: rootVC.webView];
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     AVPlayer *player = [[AVPlayer alloc] init];
     _videoPlayer = [AVPlayerLayer playerLayerWithPlayer: player];
@@ -61,6 +69,15 @@
     }
     if(item.status == AVPlayerItemStatusFailed){
         [self send_event:_videoplayer_command withMessage:@{@"status":@"fail"} Alive:YES State:YES];
+    }
+}
+
+- (void) videoPlayBackDidFinish:(NSNotification*)notification {
+    NSLog(@"videoPlayBackDidFinish");
+    if(_videoPlayer){
+        CMTime time = CMTimeMakeWithSeconds(0, 1);
+        [_videoPlayer.player seekToTime: time];
+        [_videoPlayer.player play];
     }
 }
 
