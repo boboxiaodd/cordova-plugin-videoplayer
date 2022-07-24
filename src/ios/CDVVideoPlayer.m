@@ -47,13 +47,13 @@
 {
     if(!_videoPlayer) return;
     [_videoPlayer pause];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 }
 -(void) resume_video:(CDVInvokedUrlCommand *)command
 {
     if(!_videoPlayer) return;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoPlayBackDidFinish:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoPlayBackDidFinish:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+//    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [_videoPlayer play];
 }
 
