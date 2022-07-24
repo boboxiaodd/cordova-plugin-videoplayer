@@ -6,41 +6,27 @@
 
 @interface CDVVideoPlayer ()
 @property (nonatomic,strong) CDVInvokedUrlCommand * videoplayer_command;
-@property (nonatomic,strong) UIView * videoView;
-@property (nonatomic,strong) AVPlayerLayer* videoPlayer;
+//@property (nonatomic,strong) UIView * videoView;
+@property (nonatomic,strong) AVPlayer* videoPlayer;
 @end
 
 @implementation CDVVideoPlayer
 -(void) prepare_play_video:(CDVInvokedUrlCommand *)command
 {
     _videoplayer_command = command;
-    _videoView = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    MainViewController *rootVC = (MainViewController *)[UIApplication sharedApplication].keyWindow.rootViewController;
-    if(rootVC.webView.backgroundColor != UIColor.clearColor){
-        rootVC.webView.backgroundColor = UIColor.clearColor;
-        rootVC.webView.opaque = false;
-    }
-    [rootVC.view insertSubview:_videoView belowSubview: rootVC.webView];
-//    [self.viewController.view addSubview:_videoView];
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-    AVPlayer *player = [[AVPlayer alloc] init];
-    _videoPlayer = [AVPlayerLayer playerLayerWithPlayer: player];
-    _videoPlayer.frame = _videoView.frame;
-    _videoPlayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    [_videoView.layer addSublayer: _videoPlayer];
+    _videoPlayer = [[AVPlayer alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoPlayBackDidFinish:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     [self send_event:_videoplayer_command withMessage:@{@"status":@"init"} Alive:YES State:YES];
 
 }
+
 -(void) end_play_video:(CDVInvokedUrlCommand *)command
 {
     _videoplayer_command = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
-    [_videoPlayer.player replaceCurrentItemWithPlayerItem:nil];
-    [_videoPlayer removeFromSuperlayer];
-    [_videoView removeFromSuperview];
+    [_videoPlayer replaceCurrentItemWithPlayerItem:nil];
     _videoPlayer = nil;
-    _videoView = nil;
 }
 
 -(void) play_video:(CDVInvokedUrlCommand *)command
@@ -50,21 +36,25 @@
     NSURL *url =  [NSURL URLWithString:videoURL];
     AVPlayerItem * movie  =  [AVPlayerItem playerItemWithURL:url];
     [movie addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
-    [_videoPlayer.player replaceCurrentItemWithPlayerItem:movie];
-    [_videoPlayer.player play];
+    [_videoPlayer replaceCurrentItemWithPlayerItem:movie];
+}
+-(void) start_play:(CDVInvokedUrlCommand *)command
+{
+    if(!_videoPlayer) return;
+    [_videoPlayer play];
 }
 -(void) pause_video:(CDVInvokedUrlCommand *)command
 {
-    [_videoView setHidden:YES];
-    [_videoPlayer.player pause];
+    if(!_videoPlayer) return;
+    [_videoPlayer pause];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 }
 -(void) resume_video:(CDVInvokedUrlCommand *)command
 {
-    [_videoView setHidden:NO];
+    if(!_videoPlayer) return;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoPlayBackDidFinish:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-    [_videoPlayer.player play];
+    [_videoPlayer play];
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
@@ -81,8 +71,8 @@
     NSLog(@"videoPlayBackDidFinish");
     if(_videoPlayer){
         CMTime time = CMTimeMakeWithSeconds(0, 1);
-        [_videoPlayer.player seekToTime: time];
-        [_videoPlayer.player play];
+        [_videoPlayer seekToTime: time];
+        [_videoPlayer play];
     }
 }
 

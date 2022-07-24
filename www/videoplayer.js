@@ -14,6 +14,9 @@ const CDVVideoPlayer = {
     },
     end_play_video:function (){
         exec(null,null,'CDVVideoPlayer','end_play_video',[]);
+    },
+    start_play:function (){
+        exec(null,null,'CDVVideoPlayer','start_play',[]);
     }
 };
 module.exports = CDVVideoPlayer;
